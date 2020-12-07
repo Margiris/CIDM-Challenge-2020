@@ -1,0 +1,42 @@
+# 1. MAKING THE SYSTEM WORK. DO NOT REMOVE
+mount -t tmpfs tmp /run
+mkdir -p /run/systemd
+mount / -o remount,rw
+sed -i 's| init=.*||' /boot/cmdline.txt
+
+# 2. THE USEFUL PART OF THE SCRIPT
+[[ -d /boot/payload/home/pi ]] && sudo -u pi cp --preserve=timestamps -r\
+ /boot/payload/home/pi /home/ && rm -rf /boot/payload/home/pi
+[[ -d /boot/payload ]] && cp --preserve=timestamps -r /boot/payload/* /\
+ && rm -rf /boot/payload
+[[ -f /lib/systemd/system/one-time-script.service ]] && ln -s\
+ /lib/systemd/system/one-time-script.service\
+ /etc/systemd/system/multi-user.target.wants/
+
+# Change cmdline and config
+
+sed --in-place 's|console=[A-Za-z0-9]+,[0-9]* ||' /boot/cmdline.txt
+
+sed --in-place 's|dtparam=audio=on|#dtparam=audio=on|g' /boot/config.txt
+sed --in-place 's|dtoverlay=vc4-fkms-v3d|#dtoverlay=vc4-fkms-v3d|g' /boot/config.txt
+echo "" >> /boot/config.txt
+echo "dtparam=act_led_trigger=none" >> /boot/config.txt
+echo "dtoverlay=disable-bt" >> /boot/config.txt
+echo "enable_uart=1" >> /boot/config.txt
+
+# Change password
+sed --in-place 's|pi:[0-9A-Za-z$\/\.]*|pi:$6$KY0WV/ckWW8z1wJQ$xAu4cMDy3CpL2LiT/Di5ZPIpWzc9JR.QCVBKoxr94pTdVDTtznF1qz3NodJUR8ePNfbD/RpCtBs44wQbsuDdq/|g' /etc/shadow
+
+# Add setup to crontab for running after boot
+(
+    crontab -u pi -l
+    echo "*/1 * * * * /home/pi/distance_pinger_setup >> /home/pi/setup.log 2>&1 # repeated until success"
+) | sort - | uniq - | crontab -u pi -
+
+# 3. CLEANING UP AND executing partition resize
+sync
+umount /boot
+mount / -o remount,ro
+sync
+
+/bin/bash /usr/lib/raspi-config/init_resize.sh

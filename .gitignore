@@ -127,3 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+pi/payload/home/pi/distance_pinger_setup
