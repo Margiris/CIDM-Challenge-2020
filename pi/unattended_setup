@@ -5,24 +5,25 @@ mount / -o remount,rw
 sed -i 's| init=.*||' /boot/cmdline.txt
 
 # 2. THE USEFUL PART OF THE SCRIPT
-[[ -d /boot/payload/home/pi ]] && sudo -u pi cp --preserve=timestamps -r\
- /boot/payload/home/pi /home/ && rm -rf /boot/payload/home/pi
-[[ -d /boot/payload ]] && cp --preserve=timestamps -r /boot/payload/* /\
- && rm -rf /boot/payload
-[[ -f /lib/systemd/system/one-time-script.service ]] && ln -s\
- /lib/systemd/system/one-time-script.service\
- /etc/systemd/system/multi-user.target.wants/
+[[ -d /boot/payload/home/pi ]] && sudo -u pi cp --preserve=timestamps -r /boot/payload/home/pi /home/ && rm -rf /boot/payload/home/pi
+[[ -d /boot/payload ]] && cp --preserve=timestamps -r /boot/payload/* / && rm -rf /boot/payload
+[[ -f /lib/systemd/system/one-time-script.service ]] && ln -s /lib/systemd/system/one-time-script.service /etc/systemd/system/multi-user.target.wants/
 
 # Change cmdline and config
-
+# Remove console on UART to enable use of GPS
 sed --in-place 's|console=[A-Za-z0-9]+,[0-9]* ||' /boot/cmdline.txt
 
+# Disable audio and 3D video drivers
 sed --in-place 's|dtparam=audio=on|#dtparam=audio=on|g' /boot/config.txt
 sed --in-place 's|dtoverlay=vc4-fkms-v3d|#dtoverlay=vc4-fkms-v3d|g' /boot/config.txt
-echo "" >> /boot/config.txt
-echo "dtparam=act_led_trigger=none" >> /boot/config.txt
-echo "dtoverlay=disable-bt" >> /boot/config.txt
-echo "enable_uart=1" >> /boot/config.txt
+
+# Disable LED light, bluetooth and enable UART
+{
+    echo ""
+    echo "dtparam=act_led_trigger=none"
+    echo "dtoverlay=disable-bt"
+    echo "enable_uart=1"
+} >>/boot/config.txt
 
 # Change password
 sed --in-place 's|pi:[0-9A-Za-z$\/\.]*|pi:$6$KY0WV/ckWW8z1wJQ$xAu4cMDy3CpL2LiT/Di5ZPIpWzc9JR.QCVBKoxr94pTdVDTtznF1qz3NodJUR8ePNfbD/RpCtBs44wQbsuDdq/|g' /etc/shadow
