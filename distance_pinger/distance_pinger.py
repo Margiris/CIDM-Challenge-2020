@@ -158,7 +158,9 @@ def main():
     except Exception as e:
         log(args['log'], 'Error: {}\n'.format(e))
 
-    log(args['file'], '{:.2f},{}\n'.format(distance, ','.join(gps_data)))
+    data = f"{distance:.2f},{','.join(gps_data)}\n"
+    if(data and len(data) > 0):
+        log(args['file'], data)
     end_process()
 
 
