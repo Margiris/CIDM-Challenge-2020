@@ -5,7 +5,10 @@ crontab -l | sed '/.*# repeated until success/d' | crontab -
 
 PROGRAM_FOLDER="distance_pinger"
 PROGRAM="${PROGRAM_FOLDER}.py"
-output_file="/home/pi/${PROGRAM_FOLDER}/trash_levels.csv"
+
+output_file="/boot/${PROGRAM_FOLDER}/trash_levels.csv"
+mkdir -p "/boot/${PROGRAM_FOLDER}"
+
 CMD="run_dir=/home/pi/${PROGRAM_FOLDER}; \${run_dir}/${PROGRAM} --file ${output_file} --log \${run_dir}/program.log --timeout 60 --count 10"
 
 add_to_crontab() {
