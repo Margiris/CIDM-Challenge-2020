@@ -1,12 +1,12 @@
 # CIDM-Challenge-2020 - Distance pinger
 
-Program that writes distance values from ultrasonic sensor together with GPS coordinates and measurement time to specified file in CSV format.
+Program that writes distance values from ultrasonic sensor together with GPS coordinates and the time of measurement to specified file in CSV format.
 
 All needed files are prepared in the `pi/` folder. If you don't intend to modify it, then clone this repository and [install](#installing).
 
 ## Downloading
 
-Run `download.sh` only on device that you intend to use this for, then transfer `debs` and`pip` folders to `distance_pinger/` folder on your device.
+Run `download.sh` only on device that you intend to use this for, then transfer `debs` and `pip` folders to `distance_pinger/` folder on your device.
 
 > If you're not adding dependencies, you don't have to download anything. All currently needed files are in the `distance_pinger/` folder already.
 
