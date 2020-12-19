@@ -7,9 +7,9 @@ PROGRAM_FOLDER="distance_pinger"
 PROGRAM="${PROGRAM_FOLDER}.py"
 
 output_file="/boot/${PROGRAM_FOLDER}/trash_levels.csv"
-mkdir -p "/boot/${PROGRAM_FOLDER}"
+sudo mkdir -p "/boot/${PROGRAM_FOLDER}"
 
-CMD="run_dir=/home/pi/${PROGRAM_FOLDER}; \${run_dir}/${PROGRAM} --file ${output_file} --log \${run_dir}/program.log --timeout 60 --count 10"
+CMD="sudo python3 /home/pi/${PROGRAM_FOLDER}/${PROGRAM} --file ${output_file} --log /home/pi/${PROGRAM_FOLDER}/program.log --timeout 60 --count 10"
 
 add_to_crontab() {
 	(
@@ -39,9 +39,9 @@ if ! sudo dpkg -R -i $PROGRAM_FOLDER/debs; then
 	die "$0"
 fi
 
-if ! pip3 install --no-index --find-links ${PROGRAM_FOLDER}/pip -r ${PROGRAM_FOLDER}/requirements.txt; then
+if ! sudo pip3 install --no-index --find-links ${PROGRAM_FOLDER}/pip -r ${PROGRAM_FOLDER}/requirements.txt; then
 	echo "Failed to install dependencies from local, trying to connect to internet..."
-	pip3 install -r ${PROGRAM_FOLDER}/requirements.txt || die "$0"
+	sudo pip3 install -r ${PROGRAM_FOLDER}/requirements.txt || die "$0"
 fi
 
 chmod +x ${PROGRAM_FOLDER}/${PROGRAM}
