@@ -28,9 +28,7 @@ It will self-install on the next boot.
 After installation the device will:
 
 - have it's password set to 'cidm'.
-- automatically connect to a wireless network that is defined in `pi/wpa_supplicant.conf`.
-
-  Edit the file according to your network, or create a wireless network based on current configuration file.
+- automatically connect to a wireless network that is defined in `pi/wpa_supplicant.conf`.  Edit the file according to your network, or create a wireless network based on current configuration file.
 
 - have disabled:
   - Bluetooth
